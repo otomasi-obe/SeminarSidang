@@ -221,12 +221,63 @@ HTTP Request → Middleware (Auth/CORS)
 
 ## 7. Workflow Scenarios
 
-### Scenario 1: Dosen Membuat Jadwal Baru
+### Scenario 1: Alur Seminar Proposal (SEMPRO) - Sesuai Aturan Akademik
+
+**Step 1: Mahasiswa Submit Proposal ke Prodi**
+```
+1. Dosen Pembimbing review & approve proposal
+2. Dosen sign proposal digital
+3. Mahasiswa submit proposal ke Prodi via sistem
+4. Status: SUBMITTED_TO_PRODI
+5. Prodi menerima notifikasi
+```
+
+**Step 2: Prodi Tetapkan Penguji (Examiners)**
+```
+1. Prodi login → Dashboard Prodi
+2. Lihat pending proposals
+3. Klik Proposal → "Assign Examiners"
+4. Pilih 2-3 penguji dari daftar dosen
+5. Status: EXAMINERS_ASSIGNED
+6. Penguji dapat notifikasi assignment
+```
+
+**Step 3: Prodi Tetapkan Jadwal & Tempat**
+```
+1. Prodi klik "Set Schedule"
+2. Isi: tanggal, jam mulai, jam selesai, ruangan, lokasi
+3. Sistem check jadwal conflict
+4. Submit → Status: SCHEDULED
+5. Sistem auto-hitung H-3 deadline
+```
+
+**Step 4: Prodi Kirim Undangan ke Penguji (H-3 maksimal)**
+```
+1. H-3 system reminder kepada Prodi
+2. Prodi generate & kirim:
+   - PDF Undangan resmi
+   - Proposal PDF
+   - Link calendar event
+3. Email otomatis ke semua penguji
+4. Status: INVITATION_SENT
+5. Sistem track: konfirmasi penguji (optional)
+```
+
+**Step 5: Seminar Proposal Dilaksanakan**
+```
+1. Pada jadwal yang ditentukan
+2. Penguji, dosen pembimbing, mahasiswa hadir
+3. Admin/Prodi update status: START_EXAM
+4. Setelah selesai → Status: COMPLETED
+5. Nilai/hasil ditambahkan (optional extension)
+```
+
+### Scenario 2: Dosen Membuat Jadwal SKP (Simpler Workflow)
 ```
 1. Dosen login dengan email/password
 2. Masuk ke dashboard Dosen
 3. Klik "Buat Jadwal Baru"
-4. Isi form: tipe (SEMPRO), mahasiswa, judul, tanggal, jam
+4. Isi form: tipe (SKP), mahasiswa, judul, tanggal, jam
 5. Submit → Sistem check konflik
 6. Success → Jadwal appears di landing page
 7. Mahasiswa menerima notifikasi (optional)

@@ -25,12 +25,12 @@ TUJUAN:
 
 TIPE KEGIATAN (3 jenis):
 1. SKP (Seminar Kerja Praktik)
-   - Dosen langsung jadwal
-   - Simple workflow: Dosen create → display
+   - Dosen atau Admin create jadwal
+   - Simple workflow: Create → display di landing page
 
 2. SEMPRO (Seminar Proposal Tugas Akhir)
-   - Complex workflow dengan penguji & undangan
-   - Alur: Mahasiswa submit → Prodi assign penguji → Prodi set jadwal → kirim undangan (H-3) → execute
+   - Admin manage workflow dengan penguji & undangan
+   - Alur: Admin assign penguji → set jadwal → kirim undangan (H-3) → execute
 
 3. SIDANG (Sidang Tugas Akhir)
    - Similar ke SEMPRO
@@ -47,61 +47,47 @@ ROLE 1: IT_ADMIN (IT Administrator)
 ├─ Khusus: Database management, system monitoring
 └─ Dashboard: System admin panel dengan statistics
 
-ROLE 2: ADMIN (Administrator Akademik)
-├─ Permissions: Create/Read/Update/Delete schedules
-├─ Limitation: Cannot manage users
-├─ Special: Monitor semua kegiatan akademik
-└─ Dashboard: Academic management dashboard
-
-ROLE 3: PRODI (Program Director/Coordinator)
-├─ Permissions: 
+ROLE 2: ADMIN (Administrator - Akademik & Workflow)
+├─ Permissions:
+│   ├─ Create/Edit/Delete semua schedules (SKP/SEMPRO/SIDANG)
 │   ├─ Assign examiners untuk SEMPRO/SIDANG
 │   ├─ Set schedule & location
-│   ├─ Send invitations ke penguji
+│   ├─ Send invitations ke penguji (dengan H-3 validation)
 │   ├─ View & manage semua proposal
-│   └─ Monitor workflow progress
-├─ Workflow Control: Manage status transitions (SUBMITTED → ASSIGNED → SCHEDULED → SENT → EXECUTED)
-├─ Limitation: Hanya manage proposal dalam prodi mereka
-└─ Dashboard: Prodi department dashboard
+│   ├─ Monitor workflow progress
+│   └─ View all dashboards & reports
+├─ Limitation: Cannot manage users (IT_ADMIN only)
+└─ Dashboard: Admin management dashboard
 
-ROLE 4: DOSEN (Lecturer/Supervisor)
+ROLE 3: DOSEN (Lecturer/Supervisor)
 ├─ Permissions:
 │   ├─ Create SKP schedules
-│   ├─ Submit & sign SEMPRO/SIDANG proposals
 │   ├─ Edit schedules yang mereka buat
 │   ├─ View all schedules (read-only)
-│   └─ As examiner: review & approve pada SEMPRO/SIDANG
+│   └─ As examiner: review & input score pada SEMPRO/SIDANG
 ├─ Limitation: SKP hanya untuk mahasiswa bimbingan mereka
-└─ Dashboard: Lecturer dashboard
+└─ Dashboard: Lecturer dashboard dengan jadwal mereka
 
-ROLE 5: MAHASISWA (Student)
-├─ Permissions:
-│   ├─ View jadwal pribadi
-│   ├─ View semua jadwal (read-only)
-│   └─ Submit proposal ke prodi (untuk SEMPRO/SIDANG)
-├─ Limitation: Read-only untuk mayoritas fitur
-└─ Dashboard: Student dashboard - lihat jadwal pribadi & undangan
-
-ROLE 6: GUEST (No Login)
+GUEST (No Login)
 ├─ Permissions: View public landing page
-├─ Display: Jadwal yang sudah scheduled (without private details)
+├─ Display: Semua scheduled jadwal dengan filter
 └─ Limitation: Tanpa akses management features
 
 PERMISSION MATRIX:
-┌─────────────────────────────────────────────────────┐
-│         Feature         │IT │ADMIN│PRODI│DOSEN│MHS│
-├─────────────────────────────────────────────────────┤
-│ Create Schedule         │✅ │ ✅  │  ✅ │ ✅ │❌ │
-│ Edit Schedule           │✅ │ ✅  │  ✅ │ ✅*│❌ │
-│ Delete Schedule         │✅ │ ✅  │  ✅ │ ❌ │❌ │
-│ Assign Examiners        │✅ │ ✅  │  ✅ │ ❌ │❌ │
-│ Set Jadwal & Tempat     │✅ │ ✅  │  ✅ │ ❌ │❌ │
-│ Send Invitations        │✅ │ ✅  │  ✅ │ ❌ │❌ │
-│ Submit Proposal         │✅ │ ✅  │  ✅ │ ✅ │ ✅│
-│ Manage Users            │✅ │ ❌  │  ❌ │ ❌ │❌ │
-│ View Dashboard          │✅ │ ✅  │  ✅ │ ✅ │ ✅│
-│ View Reports            │✅ │ ✅  │  ✅ │ ✅ │❌ │
-└─────────────────────────────────────────────────────┘
+┌──────────────────────────────────────┐
+│       Feature        │IT_ADMIN│ADMIN│DOSEN│
+├──────────────────────────────────────┤
+│ Create Schedule      │   ✅   │ ✅  │ ✅ │
+│ Edit Schedule        │   ✅   │ ✅  │ ✅*│
+│ Delete Schedule      │   ✅   │ ✅  │ ❌ │
+│ Assign Examiners     │   ✅   │ ✅  │ ❌ │
+│ Set Jadwal & Tempat  │   ✅   │ ✅  │ ❌ │
+│ Send Invitations     │   ✅   │ ✅  │ ❌ │
+│ Manage Users         │   ✅   │ ❌  │ ❌ │
+│ View Dashboard       │   ✅   │ ✅  │ ✅ │
+│ Input Score (Exam)   │   ✅   │ ✅  │ ✅ │
+└──────────────────────────────────────┘
+*Dosen hanya edit jadwal yang mereka buat
 
 ===========================================
 BAGIAN 3: WORKFLOW & PROSES AKADEMIK
@@ -117,26 +103,25 @@ DOSEN create jadwal
 
 WORKFLOW SEMPRO (Complex - dengan penguji & undangan):
 
-STEP 1: MAHASISWA SUBMIT PROPOSAL KE PRODI
-   └─ Syarat: Sudah ditandatangani Dosen Pembimbing
+STEP 1: ADMIN RECEIVE PROPOSAL
+   └─ Admin dapat notifikasi ada pending proposal
    └─ Status: SUBMITTED_TO_PRODI
-   └─ Noti: Prodi dapat notifikasi ada pending proposal
 
-STEP 2: PRODI TETAPKAN PENGUJI
+STEP 2: ADMIN ASSIGN EXAMINERS
    └─ Aksi: Prodi assign 2-3 dosen penguji
    └─ Status: EXAMINERS_ASSIGNED
    └─ Noti: Penguji dapat notifikasi assignment
 
-STEP 3: PRODI TETAPKAN JADWAL & TEMPAT
+STEP 3: ADMIN SET SCHEDULE & LOCATION
    └─ Aksi: Set tanggal, jam, ruangan, lokasi
    └─ Validation: Cek konflik dengan jadwal dosen & tempat
    └─ Auto-calculate: H-3 deadline untuk kirim undangan
    └─ Status: SCHEDULED
 
-STEP 4: KIRIM UNDANGAN KE PENGUJI (BATAS H-3)
+STEP 4: ADMIN SEND INVITATIONS (BATAS H-3)
    └─ Trigger: Manual atau auto pada H-3 system reminder
    └─ Content Email: Nomor undangan, judul, jadwal, attachment proposal
-   └─ Recipient: Semua penguji, dosen pembimbing, mahasiswa
+   └─ Recipient: Semua penguji, dosen pembimbing
    └─ Status: INVITATION_SENT
    └─ VALIDATION: Sistem BLOCK jika < H-3
 

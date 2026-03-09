@@ -2,11 +2,12 @@
 
 ## Overview
 
-Sistem menggunakan Role-Based Access Control (RBAC) dengan 4 role utama:
+Sistem menggunakan Role-Based Access Control (RBAC) dengan 5 role utama:
 1. **IT Admin** - Administrator teknis dengan akses penuh
 2. **Admin** - Administrator akademik yang manajal jadwal
-3. **Dosen** - Pengajar yang membuat dan mengelola jadwal mereka
-4. **Mahasiswa** - Pelajar yang melihat jadwal mereka
+3. **Prodi** - Koordinator Program Studi yang manage seminar proposal
+4. **Dosen** - Pengajar yang membuat dan mengelola jadwal mereka
+5. **Mahasiswa** - Pelajar yang melihat jadwal mereka
 
 ---
 
