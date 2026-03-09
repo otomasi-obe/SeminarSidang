@@ -42,3 +42,8 @@ build/
 .env
 .env.local
 .env.*.local
+backend/database.db
+backend/database.db-shm
+backend/database.db-wal
+backend/node_modules/
+backend/.env
